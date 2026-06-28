@@ -49,7 +49,11 @@ static void syncSystemClock() {
     if (gpsSec == 0) return;
 
     struct timeval tv;
-    tv.tv_sec  = (time_t)(gpsSec + ageMicros / 1000000LL);
+    // PPS marks the start of the next UTC second. The NMEA timestamp that was
+    // parsed just before/around the pulse still belongs to the previous second
+    // on typical GPS modules. Align the system clock to the PPS edge by using
+    // the following second, otherwise the NTP server runs ~1s behind UTC.
+    tv.tv_sec  = (time_t)(gpsSec + 1 + ageMicros / 1000000LL);
     tv.tv_usec = (suseconds_t)(ageMicros % 1000000LL);
     settimeofday(&tv, nullptr);
 

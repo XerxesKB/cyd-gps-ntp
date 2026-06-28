@@ -4,6 +4,10 @@
 
 Lokaler NTP-Zeitserver auf Basis eines **Cheap Yellow Display (ESP32-2432S028)** mit GPS-Zeitquelle über ein **AIR530Z Modul**. Das PPS-Signal des Moduls wird zur Präzisionsverbesserung genutzt. Zeit und Statusdaten werden auf dem integrierten Touchdisplay sowie über eine Webseite angezeigt.
 
+## Aktuelle Debug-Notiz
+
+- 2026-06-28: Windows-`w32tm` zeigte `time.local` stabil gegen den lokal synchronisierten PC, aber PC/`time.local` lagen ca. 0,98 s hinter PTB. Ursache im Code: PPS-Flanke markiert den Beginn der nächsten Sekunde, während der zuletzt geparste NMEA-Zeitstempel noch zur vorherigen Sekunde gehört. Fix: PPS-Sync in `main.cpp` setzt `gpsSec + 1`; NTP-Fraktion in `ntp_server.cpp` nutzt jetzt exakt `2^32`.
+
 ---
 
 ## Hardware

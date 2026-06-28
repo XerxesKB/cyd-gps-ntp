@@ -14,7 +14,7 @@ static void packU32(uint8_t* buf, uint32_t val) {
 
 static void packTimestamp(uint8_t* buf, uint32_t sec, uint32_t usec) {
     packU32(buf,     sec + NTP_EPOCH_DELTA);
-    packU32(buf + 4, (uint32_t)(((uint64_t)usec * 0xFFFFFFFFULL) / 1000000ULL));
+    packU32(buf + 4, (uint32_t)(((uint64_t)usec << 32) / 1000000ULL));
 }
 
 void NtpServer::begin() {
